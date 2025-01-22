@@ -1,4 +1,4 @@
-module github.com/damiancxliew/web_forum
+module github.com/damiancxliew/web-forum
 
 go 1.23.5
 
