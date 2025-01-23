@@ -34,7 +34,7 @@ const AdminRequest = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await apiRequest("users", "GET", `${user?._id}`);
+      const response = await apiRequest("users", "GET", `${user?.id}`);
       if (response.success) {
         dispatch({ type: "LOGIN", payload: response.data });
       }
@@ -98,13 +98,13 @@ const AdminRequest = () => {
       const response = await apiRequest(
         "adminRequest",
         "POST",
-        `${user?._id}`,
+        `${user?.id}`,
         formData
       );
 
       setIsLoading(false);
       if (response.success) {
-        if (user?._id) {
+        if (user?.id) {
           dispatch({
             type: "UPDATE_USER", // Assuming "LOGIN" is the action that updates the user
             payload: {

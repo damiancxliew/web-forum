@@ -26,12 +26,13 @@ export const apiRequest = async (
   data: any = null
 ): Promise<ApiResponse> => {
   try {
-    const url = `${process.env.REACT_APP_API_URL}/api/${collection_name}${endpoint}`;
+    const url = `${process.env.REACT_APP_API_URL}/api/${collection_name}/${endpoint}`;
     let response: AxiosResponse;
 
     // Handle different HTTP methods
     switch (method) {
       case "GET":
+        console.log(collection_name, endpoint, data);
         response = await axios.get(url, { params: data });
         break;
       case "POST":

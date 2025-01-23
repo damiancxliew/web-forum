@@ -56,14 +56,14 @@ function DeleteAccount() {
 
     setIsDeleting(true);
     try {
-      const response = await apiRequest("users", "DELETE", `${user?._id}`);
+      const response = await apiRequest("users", "DELETE", `${user?.id}`);
 
       if (response.success) {
         setIsSuccessDialogOpen(true); // Open success dialog
         setTimeout(() => {
           dispatch({
             type: "LOGOUT",
-            payload: null
+            payload: null,
           });
           navigate("/");
         }, 3000); // Redirect after showing success dialog
@@ -107,8 +107,8 @@ function DeleteAccount() {
 
             <AlertDialogBody>
               <Text>
-                Are you sure you want to delete your account? This action cannot be undone and will
-                permanently delete all your data.
+                Are you sure you want to delete your account? This action cannot
+                be undone and will permanently delete all your data.
               </Text>
               <Text mt={4} fontWeight="bold">
                 To confirm deletion, please type in the following code:
@@ -155,14 +155,20 @@ function DeleteAccount() {
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold" color="green.500">
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              color="green.500"
+            >
               Account Deleted
             </AlertDialogHeader>
             <AlertDialogBody>
               <Text>Your account has been successfully deleted.</Text>
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button onClick={() => setIsSuccessDialogOpen(false)}>Close</Button>
+              <Button onClick={() => setIsSuccessDialogOpen(false)}>
+                Close
+              </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

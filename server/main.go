@@ -230,6 +230,29 @@ func (r *Repository) Login(context *fiber.Ctx) error {
 		"token":   token,
 	})
 }
+func (r *Repository) GetUserByID(context *fiber.Ctx) error {
+	id := context.Params("id")
+	user := &models.User{}
+	if id == "" {
+		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "id cannot be empty",
+		})
+		return nil
+	}
+
+	err := r.DB.Where("id = ?", id).First(user).Error
+	if err != nil {
+		context.Status(http.StatusBadRequest).JSON(
+			&fiber.Map{"message": "could not get the thread"})
+		return err
+	}
+	context.Status(http.StatusOK).JSON(user)
+	// context.Status(http.StatusOK).JSON(&fiber.Map{
+	// 	"message": "User fetched successfully",
+	// 	"data":    user,
+	// })
+	return nil
+}
 
 func (r *Repository) GetUsers(context *fiber.Ctx) error {
     users := &[]models.User{}
@@ -412,6 +435,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	api.Post("/signup", r.SignUp)  // Replace `CreateUser` with `SignUp`
 	api.Post("/login", r.Login)    // Add a route for `Login`
 	api.Get("/get_users", r.GetUsers) // Protect `GetUsers` with JWTMiddleware
+	api.Get("/get_user/:id", r.GetUserByID)
 
 	// Comment routes
 	api.Post("/create_comment", r.CreateComment)

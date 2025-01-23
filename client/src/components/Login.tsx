@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/apiRequest";
 import "../Signup_Login.css";
 import { useAuth } from "../providers/AuthProvider";
+import { jwtDecode } from "jwt-decode";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -24,9 +25,12 @@ const Login: React.FC = () => {
       });
       if (response.success) {
         localStorage.setItem("token", response.data.token); //Ensure JWT bearer token is stored in the local storage after logging in
-
+        console.log(response);
+        const decoded_token: any = jwtDecode(response.data.token);
+        const user_id = decoded_token.user_id;
         //Inserting user into the auth context
-        const user = await apiRequest("users", "GET", response.data.userId);
+        const user = await apiRequest("get_user", "GET", `${user_id}`);
+
         dispatch({ type: "LOGIN", payload: user.data });
 
         console.log("Login successful:", response.data);
