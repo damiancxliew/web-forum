@@ -10,7 +10,7 @@ interface ApiResponse<T = any> {
 /**
  * Generalized function to make API requests.
  *
- * @param collection_name - The name of the API route (e.g., "order_route", "product_route").
+ * @param collection_name - The name of the API route (e.g., "signup").
  * @param method - HTTP method to use ("GET", "POST", "PUT", "DELETE").
  * @param endpoint - Specific endpoint or resource to target (e.g., ":id", "/create", "/update/:id"). Refer to the server file
  * @param data - Data to be sent with the request (used for POST, PUT, DELETE).
@@ -26,7 +26,7 @@ export const apiRequest = async (
   data: any = null
 ): Promise<ApiResponse> => {
   try {
-    const url = `${process.env.REACT_APP_API_URL}/${collection_name}/${endpoint}`;
+    const url = `${process.env.REACT_APP_API_URL}/api/${collection_name}${endpoint}`;
     let response: AxiosResponse;
 
     // Handle different HTTP methods
@@ -35,7 +35,7 @@ export const apiRequest = async (
         response = await axios.get(url, { params: data });
         break;
       case "POST":
-        response = await axios.post(url, { data });
+        response = await axios.post(url, data);
         break;
       case "PUT":
         response = await axios.put(url, { data });

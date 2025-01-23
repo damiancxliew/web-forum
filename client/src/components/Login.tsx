@@ -18,17 +18,17 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await apiRequest("users", "POST", "login", {
+      const response = await apiRequest("login", "POST", "", {
         email: email,
         password: password,
       });
       if (response.success) {
         localStorage.setItem("token", response.data.token); //Ensure JWT bearer token is stored in the local storage after logging in
-        
+
         //Inserting user into the auth context
         const user = await apiRequest("users", "GET", response.data.userId);
         dispatch({ type: "LOGIN", payload: user.data });
-        
+
         console.log("Login successful:", response.data);
         navigate("/home");
       } else {
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
     <div className="main-container">
       {/* Left Section: Logo */}
       <div className="logo-section">
-        <div className="logo-box">"ELEOS"</div>
+        <div className="logo-box"></div>
       </div>
 
       {/* Right Section: Form */}

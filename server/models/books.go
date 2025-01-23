@@ -7,8 +7,7 @@ type User struct {
 	ID        uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Username  string `gorm:"unique" json:"username"`
 	Email     string `gorm:"unique" json:"email"`
-	Password  string `json:"-"` // Omit from JSON responses for security
-	CreatedAt string `json:"created_at"`
+	Password  string `json:"password"`
 }
 
 func MigrateUsers(db *gorm.DB) error {

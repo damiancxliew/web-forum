@@ -25,12 +25,10 @@ const Signup: React.FC = () => {
     }
     console.log(name, email, password);
     try {
-      const response = await apiRequest("users", "POST", "register", {
+      const response = await apiRequest("signup", "POST", "", {
         username: name,
         email: email,
         password: password,
-        isAdmin: false,
-        isSuperAdmin: false,
       });
       if (response.success) {
         console.log("User registered successfully:", response.data);
@@ -48,7 +46,7 @@ const Signup: React.FC = () => {
     <div className="main-container">
       {/* Left Section: Logo */}
       <div className="logo-section">
-        <div className="logo-box">"ELEOS"</div>
+        <div className="logo-box"></div>
       </div>
 
       {/* Right Section: Form */}

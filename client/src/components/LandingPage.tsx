@@ -11,7 +11,7 @@ const Landing = () => {
       <nav className="navbar">
         {/* Logo on the left */}
         <div className="navbar-logo" onClick={() => navigate("/")}>
-          Web Forum
+          Technical Web Forum
         </div>
         {/* Login and Signup buttons on the right */}
         <div className="navbar-buttons">
@@ -31,12 +31,12 @@ const Landing = () => {
       </nav>
 
       {/* Main Content Section */}
-      <div className="">
+      <div className="background-section">
         {/* Logo Section */}
         <div className="logo-section flex">
           <div className="logo-box flex">
-            <h1 className="logo-title">Technical Web Forum</h1>
-            <h2 className="logo-subtitle">Damian Liew</h2>
+            {/* <h1 className="logo-title">Technical Web Forum</h1>
+            <h2 className="logo-subtitle">Damian Liew</h2> */}
           </div>
         </div>
       </div>

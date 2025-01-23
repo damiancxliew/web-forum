@@ -12,12 +12,17 @@ import (
 	"github.com/damiancxliew/web-forum/models"
 	"github.com/damiancxliew/web-forum/storage"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
-
+type User struct {
+	Username  string `gorm:"unique" json:"username"`
+	Email     string `gorm:"unique" json:"email"`
+	Password  string `json:"-"` // Omit from JSON responses for security
+}
 type Repository struct {
 	DB *gorm.DB
 }
@@ -112,51 +117,54 @@ var jwtSecret = []byte("your_secret_key")
 
 // SignUp handles user registration
 func (r *Repository) SignUp(context *fiber.Ctx) error {
-	user := models.User{}
+    user := models.User{}
+    fmt.Println("Im here")
 
-	// Parse user input
-	if err := context.BodyParser(&user); err != nil {
+    // Parse user input
+    if err := context.BodyParser(&user); err != nil {
+		fmt.Printf("BodyParser Error: %v\n", err)
 		return context.Status(http.StatusUnprocessableEntity).JSON(&fiber.Map{
 			"message": "Invalid request",
 		})
 	}
+	fmt.Printf("Parsed User: %+v\n", user)
+	
 
-	// Check for missing fields
-	if user.Username == "" || user.Email == "" || user.Password == "" {
-		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
-			"message": "All fields are required",
-		})
-	}
+    // Check for missing fields
+    if user.Username == "" || user.Email == "" || user.Password == "" {
+        return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+            "message": "All fields are required",
+        })
+    }
 
-	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
-			"message": "Failed to hash password",
-		})
-	}
-	user.Password = string(hashedPassword)
+    // Hash the password
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+    if err != nil {
+        return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+            "message": "Failed to hash password",
+        })
+    }
+    user.Password = string(hashedPassword)
 
-	// Save user to database
-	if err := r.DB.Create(&user).Error; err != nil {
-		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
-			"message": "Could not create user",
-		})
-	}
+    // Save user to database
+    if err := r.DB.Create(&user).Error; err != nil {
+        fmt.Printf("Database Error: %v\n", err)
+        return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+            "message": "Could not create user",
+        })
+    }
 
-	// Generate JWT token
-	token, err := generateJWT(user)
-	if err != nil {
-		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
-			"message": "Failed to generate token",
-		})
-	}
+    fmt.Printf("Created User: %+v\n", user)
 
-	// Respond with the token
-	return context.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "User created successfully",
-		"token":   token,
-	})
+    // Respond with created user details (excluding the password)
+    return context.Status(http.StatusOK).JSON(&fiber.Map{
+        "message": "User created successfully",
+        "user": map[string]interface{}{
+            "id":       user.ID,
+            "username": user.Username,
+            "email":    user.Email,
+        },
+    })
 }
 
 // GenerateJWT creates a token for a user
@@ -222,6 +230,24 @@ func (r *Repository) Login(context *fiber.Ctx) error {
 		"token":   token,
 	})
 }
+
+func (r *Repository) GetUsers(context *fiber.Ctx) error {
+    users := &[]models.User{}
+
+    // Query the database for all users
+    if err := r.DB.Find(users).Error; err != nil {
+        return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+            "message": "Could not retrieve users",
+        })
+    }
+
+    // Return the list of users
+    return context.Status(http.StatusOK).JSON(&fiber.Map{
+        "message": "Users fetched successfully",
+        "data":    users,
+    })
+}
+
 
 // JWTMiddleware validates the JWT token
 func JWTMiddleware(c *fiber.Ctx) error {
@@ -385,7 +411,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	// User routes
 	api.Post("/signup", r.SignUp)  // Replace `CreateUser` with `SignUp`
 	api.Post("/login", r.Login)    // Add a route for `Login`
-	// api.Get("/get_users", JWTMiddleware, r.GetUsers) // Protect `GetUsers` with JWTMiddleware
+	api.Get("/get_users", r.GetUsers) // Protect `GetUsers` with JWTMiddleware
 
 	// Comment routes
 	api.Post("/create_comment", r.CreateComment)
@@ -433,6 +459,7 @@ func main() {
 		DB: db,
 	}
 	app := fiber.New()
+	app.Use(cors.New())
 	r.SetupRoutes(app)
 	app.Listen(":8080")
 }
