@@ -1,0 +1,94 @@
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1.5vh 2vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff; /* Background color for navbar */
+    z-index: 1000; /* Ensure navbar is on top */
+}
+
+/* Logo section in navbar */
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333; /* Logo text color */
+}
+
+/* Buttons container in navbar */
+.navbar-buttons {
+    display: flex;
+    gap: 0.5vw; /* Space between buttons */
+}
+
+/* Button styling in navbar */
+.button-login,
+.button-signup {
+    padding: 8px 16px; /* Vertical and horizontal padding */
+    border: 1px solid #add8e6; /* Border styling */
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    width: 120px; /* Set a fixed width for consistent button size */
+    text-align: center; /* Center text within buttons */
+}
+
+/* Hover effects for buttons */
+.button-login:hover,
+.button-signup:hover {
+    background-color: #3c73a8; /* Change background on hover */
+    color: white; /* Change text color on hover */
+}
+
+/* Main container styling */
+.home-container {
+    padding-top: 80px; /* Push content down below navbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #3c73a8; /* Background color for the main section */
+}
+
+/* Logo section styling */
+.logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Center text in logo section */
+    margin-left: 1vw;
+}
+
+/* Logo box styling */
+.logo-box {
+    font-size: 3.5rem; /* Font size for logo */
+    font-weight: bold; /* Make logo bold */
+    color: #333; /* Logo text color */
+    margin: 1vw 0; /* Adjust margin for spacing */
+    flex-direction: column;
+}
+
+/* Logo title styling */
+.logo-title {
+    font-size: 2.5rem; /* Larger font size for title */
+    font-weight: bold; /* Make title bold */
+    color: #333; /* Set color for the title */
+    margin: 0; /* Remove default margin */
+    padding-left: 1vw; /* Add left padding for spacing in front */
+}
+
+/* Logo subtitle styling */
+.logo-subtitle {
+    font-size: 1.2rem; /* Slightly smaller size for subtitle */
+    margin: 0; /* Remove default margin */
+    padding-left: 1vw; /* Add left padding for spacing in front */
+}

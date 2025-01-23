@@ -1,0 +1,120 @@
+/* Main container holding both the left and right sections */
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    margin-left: 1vw;
+}
+
+/* Styles for the logo box */
+.logo-section {
+    flex: 1; /* Take up half the width */
+    margin-top: 0; /* Add margin to move it down */
+    display: flex;
+    justify-content: center; /* Center the logo box */
+    align-items: center; /* Center the logo vertically */
+}
+
+/* Styles for the logo box */
+.logo-box {
+    width: 60vw; /* Adjust width if needed */
+    height: 80vh;
+    background-color: #3c73a8;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Right section: Form */
+
+/* New parent container for form elements */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all items */
+    justify-content: center;
+    width: 100%; /* Full width for responsive design */
+    padding: 20px; /* Padding for form section */
+}
+
+/* Tab buttons section */
+.tab-buttons {
+    display: flex;
+    gap: 0.5vw;
+    justify-content: center;
+}
+
+/* Tab login and signup button OFF styling */
+.button-tab-signup-off,
+.button-tab-login-off {
+    padding: 8px 16px; /* Vertical and horizontal padding */
+    border: 1px solid #add8e6; /* Border styling */
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    background-color: #fff; /* Background color */
+    color: #333; /* Text color */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    width: 10vw; /* Set a fixed width for consistent button size */
+}
+
+/* Tab login and signup button ON styling */
+.button-tab-signup-on,
+.button-tab-login-on {
+    padding: 8px 16px; /* Vertical and horizontal padding */
+    border: 1px solid #add8e6; /* Border styling */
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    background-color: #add8e6; /* Light blue background */
+    color: #333; /* Text color */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    width: 10vw; /* Set a fixed width for consistent button size */
+}
+
+/* Hover effects for tab buttons */
+.button-tab-login-off:hover,
+.button-tab-signup-off:hover {
+    background-color: #3c73a8; /* Dark blue on hover */
+    color: white; /* White text on hover */
+}
+
+/* Styles for input fields */
+.input-field {
+    padding: 10px;
+    margin: 10px 0;
+    width: 20vw; /* Adjust width for better responsiveness */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Slightly rounded corners */
+}
+
+/* Error message styling */
+.error-message {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb; /* Light red border */
+    padding: 10px;
+    margin: 10px 0;
+    width: 20vw; /* Align to input and button widths */
+    border-radius: 5px; /* Rounded corners for error message */
+    text-align: center;
+}
+
+/* Confirm button styling */
+.confirm-button {
+    background-color: #3c73a8; /* Dark blue background */
+    color: white; /* White text */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
+    padding: 10px;
+    width: 20vw; /* Adjusted width within form section */
+    border-radius: 20px; /* Slightly rounded corners */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+/* Confirm button hover effect */
+.confirm-button:hover {
+    background-color: #2b4f6f; /* Darker shade on hover */
+}
