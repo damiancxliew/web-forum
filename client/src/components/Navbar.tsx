@@ -5,7 +5,7 @@ import { useAuth } from "../providers/AuthProvider";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const profilePicture = user?.profilePicture;
   return (
     <div className="shadow-md w-full p-1">
@@ -20,13 +20,16 @@ export default function Navbar() {
           <NavLink className="md:ml-8 text-lg md:my-0 my-7" to="/home">
             Home
           </NavLink>
-
-          <NavLink className="md:ml-8 text-lg md:my-0 my-7" to="/admin">
-            Admin
-          </NavLink>
-          <NavLink className="md:ml-8 text-lg md:my-0 my-7 flex flex-row items-center gap-2" to="/profile">
+          <NavLink
+            className="md:ml-8 text-lg md:my-0 my-7 flex flex-row items-center gap-2"
+            to="/profile"
+          >
             {profilePicture ? (
-              <img src={profilePicture} alt="Profile" className="w-8 h-8 rounded-full" />
+              <img
+                src={profilePicture}
+                alt="Profile"
+                className="w-8 h-8 rounded-full"
+              />
             ) : (
               <CircleUserRound />
             )}

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { apiRequest } from "../api/apiRequest";
+import Forum from "./Forum";
 
 const Home = () => {
   useEffect(() => {
@@ -134,7 +135,7 @@ const Home = () => {
   }, []);
   return (
     <>
-      <div>Welcome to ELEOS Home Page</div>;
+      <Forum />
     </>
   );
 };

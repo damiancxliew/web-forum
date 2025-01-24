@@ -13,7 +13,7 @@ function Profile() {
   const profilePicture = user?.profilePicture;
 
   useEffect(() => {
-    console.log("Test here", user);
+    // console.log("Test here", user);
     const fetchUserData = async () => {
       const response = await apiRequest("get_user", "GET", `${user?.id}`);
       if (response.success) {

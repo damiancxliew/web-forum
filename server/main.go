@@ -44,8 +44,7 @@ func (r *Repository) CreateThread(context *fiber.Ctx) error {
 		return err
 	}
 
-	context.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "thread has been created"})
+	context.Status(http.StatusOK).JSON(thread)
 	return nil
 }
 
@@ -81,10 +80,11 @@ func (r *Repository) GetThreads(context *fiber.Ctx) error {
 		return err
 	}
 
-	context.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "threads fetched successfully",
-		"data":    threads,
-	})
+	// context.Status(http.StatusOK).JSON(&fiber.Map{
+	// 	"message": "threads fetched successfully",
+	// 	"data":    threads,
+	// })
+	context.Status(http.StatusOK).JSON(threads)
 	return nil
 }
 
@@ -265,10 +265,7 @@ func (r *Repository) GetUsers(context *fiber.Ctx) error {
     }
 
     // Return the list of users
-    return context.Status(http.StatusOK).JSON(&fiber.Map{
-        "message": "Users fetched successfully",
-        "data":    users,
-    })
+    return context.Status(http.StatusOK).JSON(users)
 }
 
 
@@ -323,8 +320,24 @@ func (r *Repository) CreateComment(context *fiber.Ctx) error {
 		return err
 	}
 
-	context.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "comment has been created"})
+	context.Status(http.StatusOK).JSON(comment)
+	return nil
+}
+func (r *Repository) GetComments(context *fiber.Ctx) error {
+	comments := &[]models.Comment{}
+
+	err := r.DB.Find(comments).Error
+	if err != nil {
+		context.Status(http.StatusBadRequest).JSON(
+			&fiber.Map{"message": "could not get comments"})
+		return err
+	}
+
+	// context.Status(http.StatusOK).JSON(&fiber.Map{
+	// 	"message": "threads fetched successfully",
+	// 	"data":    threads,
+	// })
+	context.Status(http.StatusOK).JSON(comments)
 	return nil
 }
 
@@ -378,10 +391,11 @@ func (r *Repository) GetCategories(context *fiber.Ctx) error {
 		return err
 	}
 
-	context.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "categories fetched successfully",
-		"data":    categories,
-	})
+	// context.Status(http.StatusOK).JSON(&fiber.Map{
+	// 	"message": "categories fetched successfully",
+	// 	"data":    categories,
+	// })
+	context.Status(http.StatusOK).JSON(categories)
 	return nil
 }
 
@@ -439,6 +453,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 
 	// Comment routes
 	api.Post("/create_comment", r.CreateComment)
+	api.Get("/get_comments", r.GetComments)
 	api.Get("/get_comments/:thread_id", r.GetCommentsByThreadID)
 	// Category routes
 	api.Post("/create_category", r.CreateCategory)

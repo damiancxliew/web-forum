@@ -32,7 +32,7 @@ export const apiRequest = async (
     // Handle different HTTP methods
     switch (method) {
       case "GET":
-        console.log(collection_name, endpoint, data);
+        // console.log(collection_name, endpoint, data);
         response = await axios.get(url, { params: data });
         break;
       case "POST":

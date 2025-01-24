@@ -29,6 +29,7 @@ func MigrateCategories(db *gorm.DB) error {
 type Thread struct {
 	ID         uint   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Title      string `json:"title"`
+	Content	   string `json:"content"`
 	UserID     uint   `json:"user_id"`
 	CategoryID uint   `json:"category_id"`
 	CreatedAt  string `json:"created_at"`
