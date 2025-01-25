@@ -30,7 +30,7 @@ const Login: React.FC = () => {
         const user_id = decoded_token.user_id;
         //Inserting user into the auth context
         const user = await apiRequest("get_user", "GET", `${user_id}`);
-
+        console.log(user);
         dispatch({ type: "LOGIN", payload: user.data });
 
         console.log("Login successful:", response.data);

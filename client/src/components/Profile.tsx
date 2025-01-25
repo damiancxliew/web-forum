@@ -13,7 +13,6 @@ function Profile() {
   const profilePicture = user?.profilePicture;
 
   useEffect(() => {
-    // console.log("Test here", user);
     const fetchUserData = async () => {
       const response = await apiRequest("get_user", "GET", `${user?.id}`);
       if (response.success) {
@@ -26,7 +25,7 @@ function Profile() {
   }, []);
 
   return (
-    <div className="max-w-4xl mt-8 mx-3">
+    <div className="max-w-4xl mt-8 mx-80">
       {/* Header Banner */}
       <div className="bg-blue-600 p-8 text-white rounded-t-lg">
         <h1 className="text-3xl font-bold">Hi, {name}</h1>
@@ -37,7 +36,7 @@ function Profile() {
         <div className="flex justify-between items-start mb-8">
           {/* Profile Picture Section */}
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
+            {/* <div className="w-48 h-48 bg-gray-200 rounded-full flex items-center justify-center">
               {profilePicture ? (
                 <img
                   src={profilePicture}
@@ -55,7 +54,7 @@ function Profile() {
                   <path d="M20 21a8 8 0 10-16 0" />
                 </svg>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Form Fields */}
@@ -76,17 +75,7 @@ function Profile() {
                 <label className="block font-semibold">First Name</label>
                 <input
                   type="text"
-                  value={name?.split(" ")[0] || ""}
-                  readOnly
-                  className="w-full p-3 border rounded-lg bg-gray-50"
-                  placeholder="type here.."
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block font-semibold">Last Name</label>
-                <input
-                  type="text"
-                  value={name?.split(" ")[1] || ""}
+                  value={name}
                   readOnly
                   className="w-full p-3 border rounded-lg bg-gray-50"
                   placeholder="type here.."
@@ -101,34 +90,6 @@ function Profile() {
                   className="w-full p-3 border rounded-lg bg-gray-50"
                   placeholder="type here.."
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="block font-semibold">Address</label>
-                <input
-                  type="text"
-                  readOnly
-                  className="w-full p-3 border rounded-lg bg-gray-50"
-                  placeholder="type here.."
-                  value={address || ""}
-                />
-              </div>
-              {/* Request for Admin Button */}
-              <div className="col-span-2 flex justify-end">
-                {" "}
-                {/* Use col-span-2 to span across both columns */}
-                <Link
-                  className="bg-gray-300 text-black px-6 py-2 rounded-full hover:bg-gray-400"
-                  to="/profile/adminRequest"
-                >
-                  <button
-                    className="flex justify-center items-center"
-                    data-tooltip-id="request"
-                    data-tooltip-content="Click to request for admin access"
-                  >
-                    Request for Admin
-                  </button>
-                  <Tooltip id="request" />
-                </Link>
               </div>
             </div>
           </div>

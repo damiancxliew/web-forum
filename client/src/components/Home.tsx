@@ -4,7 +4,7 @@ import Forum from "./Forum";
 
 const Home = () => {
   useEffect(() => {
-    console.log("Testing API Endpoint");
+    // console.log("Testing API Endpoint");
     // Test the GET all users endpoint
     const fetchAllUsers = async () => {
       try {
@@ -126,7 +126,7 @@ const Home = () => {
     };
 
     // Call the test functions
-    console.log("Testing API Endpoints:");
+    // console.log("Testing API Endpoints:");
     //registerUser();
     //fetchAllUsers();
     //fetchUserById("60d21b4667d0d8992e610c85"); // Replace with a valid user ID

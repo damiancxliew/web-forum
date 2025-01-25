@@ -10,7 +10,6 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
   const signupUser = async () => {
     if (!email || !name || !password || !confirmPassword) {
       setErrorMessage("Please enter all fields.");
@@ -35,6 +34,9 @@ const Signup: React.FC = () => {
         navigate("/login");
       } else {
         console.error("Signup error:", response.message);
+        setErrorMessage(
+          "User existed. Please try again with a different email."
+        );
       }
     } catch (error) {
       console.error("Signup error:", error);

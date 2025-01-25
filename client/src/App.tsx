@@ -4,8 +4,13 @@ import { AuthProvider } from "./providers/AuthProvider";
 
 const App = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/signup"]; // Define routes where the Navbar should be hidden
-  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
+
+  // List of routes where the navbar should not appear
+  const hideNavbarRoutes = ["/login", "/signup", "/"];
+
+  const shouldShowNavbar =
+    !hideNavbarRoutes.includes(location.pathname) &&
+    location.state?.isNotFound !== true; // Add state check for not found pages
 
   return (
     <AuthProvider>

@@ -1,27 +1,35 @@
 import { useState } from "react";
-import { CircleUserRound } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { CircleUserRound, LogOut } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
+  const { user, dispatch } = useAuth();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
   const profilePicture = user?.profilePicture;
+
+  const handleLogOut = () => {
+    setTimeout(() => {
+      dispatch({
+        type: "LOGOUT",
+        payload: null,
+      });
+      navigate("/");
+    }, 1000); // REDIRECT after logout
+  };
+
   return (
-    <div className="shadow-md w-full p-1">
-      <nav className="flex justify-center items-center mb-6">
-        <div>
-          <NavLink to="/home">ELEOS Logo</NavLink>
-        </div>
-        <div
-          className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-300 ease-in"
-                    } md:opacity-100`}
-        >
-          <NavLink className="md:ml-8 text-lg md:my-0 my-7" to="/home">
+    <div className="shadow-md w-full p-4">
+      <nav className="flex justify-between items-center pl-24">
+        {/* Center - Navigation Links */}
+        <div className="flex-1 flex justify-center items-center gap-8">
+          <NavLink className="text-lg font-medium" to="/home">
             Home
           </NavLink>
           <NavLink
-            className="md:ml-8 text-lg md:my-0 my-7 flex flex-row items-center gap-2"
+            className="text-lg font-medium flex flex-row items-center gap-2"
             to="/profile"
           >
             {profilePicture ? (
@@ -36,6 +44,15 @@ export default function Navbar() {
             <p>{user?.username}</p>
           </NavLink>
         </div>
+
+        {/* Right Side - Logout Button */}
+        <button
+          onClick={handleLogOut}
+          className="flex items-center gap-2 text-red-500 px-4 py-2 rounded-md border border-transparent hover:border-red-600"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
+        </button>
       </nav>
     </div>
   );

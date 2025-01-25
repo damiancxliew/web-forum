@@ -118,7 +118,6 @@ var jwtSecret = []byte("your_secret_key")
 // SignUp handles user registration
 func (r *Repository) SignUp(context *fiber.Ctx) error {
     user := models.User{}
-    fmt.Println("Im here")
 
     // Parse user input
     if err := context.BodyParser(&user); err != nil {
@@ -230,6 +229,60 @@ func (r *Repository) Login(context *fiber.Ctx) error {
 		"token":   token,
 	})
 }
+// UpdateUser handles updating user data
+func (r *Repository) UpdateUser(context *fiber.Ctx) error {
+	// Parse user ID from URL params
+	id := context.Params("id")
+
+	type UpdateUserRequest struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	
+	var updateRequest UpdateUserRequest
+	if err := context.BodyParser(&updateRequest); err != nil {
+		fmt.Println("Error parsing body:", err)
+		return context.Status(http.StatusUnprocessableEntity).JSON(&fiber.Map{
+			"message": "Invalid request",
+		})
+	}
+	fmt.Printf("Parsed Body: %+v\n", updateRequest)
+	
+	// Validate user ID
+	if id == "" {
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "User ID is required",
+		})
+	}
+
+	// Find the user by ID
+	var user models.User
+	if err := r.DB.First(&user, id).Error; err != nil {
+		return context.Status(http.StatusNotFound).JSON(&fiber.Map{
+			"message": "User not found",
+		})
+	}
+
+	// Update user fields only if they are provided
+	if updateRequest.Username != "" {
+		user.Username = updateRequest.Username
+	}
+	if updateRequest.Email != "" {
+		user.Email = updateRequest.Email
+	}
+
+	// Save the updated user
+	if err := r.DB.Save(&user).Error; err != nil {
+		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "Failed to update user",
+		})
+	}
+
+	// Respond with the updated user
+	return context.Status(http.StatusOK).JSON(user)
+}
+
 func (r *Repository) GetUserByID(context *fiber.Ctx) error {
 	id := context.Params("id")
 	user := &models.User{}
@@ -268,6 +321,49 @@ func (r *Repository) GetUsers(context *fiber.Ctx) error {
     return context.Status(http.StatusOK).JSON(users)
 }
 
+func (r *Repository) DeleteUser(context *fiber.Ctx) error {
+	id := context.Params("id")
+	if id == "" {
+		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "id cannot be empty",
+		})
+	}
+
+	// Start a transaction
+	tx := r.DB.Begin()
+
+	// Delete comments by user
+	if err := tx.Where("user_id = ?", id).Delete(&models.Comment{}).Error; err != nil {
+		tx.Rollback()
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "could not delete comments",
+		})
+	}
+
+	// Delete threads by user
+	if err := tx.Where("user_id = ?", id).Delete(&models.Thread{}).Error; err != nil {
+		tx.Rollback()
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "could not delete threads",
+		})
+	}
+
+	// Delete the user
+	if err := tx.Delete(&models.User{}, id).Error; err != nil {
+		tx.Rollback()
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "could not delete user",
+		})
+	}
+
+	// Commit the transaction
+	tx.Commit()
+
+	return context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "user, threads, and comments deleted successfully",
+	})
+}
+
 
 // JWTMiddleware validates the JWT token
 func JWTMiddleware(c *fiber.Ctx) error {
@@ -298,8 +394,6 @@ func JWTMiddleware(c *fiber.Ctx) error {
 	// Token is valid; proceed to the next handler
 	return c.Next()
 }
-
-
 
 
 
@@ -358,6 +452,29 @@ func (r *Repository) GetCommentsByThreadID(context *fiber.Ctx) error {
 	})
 	return nil
 }
+
+func (r *Repository) DeleteComment(context *fiber.Ctx) error {
+	id := context.Params("id")
+	if id == "" {
+		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "id cannot be empty",
+		})
+		return nil
+	}
+
+	err := r.DB.Delete(&models.Comment{}, id)
+	if err.Error != nil {
+		context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "could not delete comment",
+		})
+		return err.Error
+	}
+	context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "comment deleted successfully",
+	})
+	return nil
+}
+
 
 // Categories
 func (r *Repository) CreateCategory(context *fiber.Ctx) error {
@@ -450,11 +567,16 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	api.Post("/login", r.Login)    // Add a route for `Login`
 	api.Get("/get_users", r.GetUsers) // Protect `GetUsers` with JWTMiddleware
 	api.Get("/get_user/:id", r.GetUserByID)
+	api.Put("/users/:id", r.UpdateUser)
+	api.Delete("/delete_user/:id", r.DeleteUser)
+
 
 	// Comment routes
 	api.Post("/create_comment", r.CreateComment)
 	api.Get("/get_comments", r.GetComments)
 	api.Get("/get_comments/:thread_id", r.GetCommentsByThreadID)
+	api.Delete("/delete_comment/:id", r.DeleteComment)
+
 	// Category routes
 	api.Post("/create_category", r.CreateCategory)
 	api.Get("/get_categories", r.GetCategories)

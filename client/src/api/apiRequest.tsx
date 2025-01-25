@@ -39,7 +39,7 @@ export const apiRequest = async (
         response = await axios.post(url, data);
         break;
       case "PUT":
-        response = await axios.put(url, { data });
+        response = await axios.put(url, data);
         break;
       case "DELETE":
         response = await axios.delete(url, { data });

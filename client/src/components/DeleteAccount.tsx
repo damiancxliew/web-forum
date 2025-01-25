@@ -56,7 +56,7 @@ function DeleteAccount() {
 
     setIsDeleting(true);
     try {
-      const response = await apiRequest("users", "DELETE", `${user?.id}`);
+      const response = await apiRequest("delete_user", "DELETE", `${user?.id}`);
 
       if (response.success) {
         setIsSuccessDialogOpen(true); // Open success dialog

@@ -1,10 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, NavLink, RouterProvider } from "react-router-dom";
 import App from "./App";
 import Admin from "./components/Admin";
 import Home from "./components/Home";
-import Landing from "./components/LandingPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
@@ -12,6 +11,9 @@ import "./index.css";
 import EditProfile from "./components/EditProfile";
 import { ChakraProvider } from "@chakra-ui/react";
 import AdminRequest from "./components/AdminRequest";
+import LandingPage from "./components/LandingPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./components/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -20,31 +22,39 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/", // Landing page route
-        element: <Landing />,
+        element: <LandingPage />,
       },
       {
         path: "/home",
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/login", // Login page route
         element: <Login />,
       },
       {
-        path: "/signup", // Login page route
+        path: "/signup", // Signup page route
         element: <Signup />,
       },
       {
         path: "/profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/profile/edit",
-        element: <EditProfile />,
-      },
-      {
-        path: "/profile/adminRequest",
-        element: <AdminRequest />,
+        element: (
+          <ProtectedRoute>
+            <EditProfile />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -54,10 +64,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/admin",
-        element: <Admin />,
+        element: (
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
+  { path: "*", element: <NotFound />, handle: { isNotFound: true } },
   //Example on creating new path
   // {
   //     path: "/{new_path}",
