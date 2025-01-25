@@ -227,19 +227,23 @@ const Forum: React.FC = () => {
       {/* Categories as Navigation Bar */}
       <div className="flex items-center justify-between border-b pb-4 mb-6">
         <div className="flex space-x-4 overflow-x-auto">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-md ${
-                selectedCategory === category.id
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
+          {categories?.length > 0 ? (
+            categories.map((category: Category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-4 py-2 rounded-md ${
+                  selectedCategory === category.id
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                {category.name}
+              </button>
+            ))
+          ) : (
+            <span className="text-gray-500">No categories available</span> // Message when no categories
+          )}
         </div>
         <button
           onClick={() => setCategoryModalOpen(true)}

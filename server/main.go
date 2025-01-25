@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 
 	"strings"
 	"time"
@@ -121,18 +122,45 @@ func (r *Repository) SignUp(context *fiber.Ctx) error {
 
     // Parse user input
     if err := context.BodyParser(&user); err != nil {
-		fmt.Printf("BodyParser Error: %v\n", err)
-		return context.Status(http.StatusUnprocessableEntity).JSON(&fiber.Map{
-			"message": "Invalid request",
-		})
-	}
-	fmt.Printf("Parsed User: %+v\n", user)
-	
+        fmt.Printf("BodyParser Error: %v\n", err)
+        return context.Status(http.StatusUnprocessableEntity).JSON(&fiber.Map{
+            "message": "Invalid request",
+        })
+    }
+    fmt.Printf("Parsed User: %+v\n", user)
 
     // Check for missing fields
     if user.Username == "" || user.Email == "" || user.Password == "" {
         return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
             "message": "All fields are required",
+        })
+    }
+
+    // Validate email format
+    if !isValidEmail(user.Email) {
+        return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+            "message": "Invalid email format",
+        })
+    }
+
+    // Validate password length (e.g., minimum 8 characters)
+    if len(user.Password) < 8 {
+        return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+            "message": "Password must be at least 8 characters long",
+        })
+    }
+
+    // Check if the email or username already exists
+    var existingUser models.User
+    if err := r.DB.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
+        return context.Status(http.StatusConflict).JSON(&fiber.Map{
+            "message": "Email already in use",
+        })
+    }
+
+    if err := r.DB.Where("username = ?", user.Username).First(&existingUser).Error; err == nil {
+        return context.Status(http.StatusConflict).JSON(&fiber.Map{
+            "message": "Username already taken",
         })
     }
 
@@ -165,6 +193,15 @@ func (r *Repository) SignUp(context *fiber.Ctx) error {
         },
     })
 }
+
+// Helper function to validate email format using regex
+func isValidEmail(email string) bool {
+    // Regular expression for validating email
+    emailRegex := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+    re := regexp.MustCompile(emailRegex)
+    return re.MatchString(email)
+}
+
 
 // GenerateJWT creates a token for a user
 func generateJWT(user models.User) (string, error) {
@@ -593,34 +630,75 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 }
 
 func main() {
+	// Load environment variables from .env file
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal(err)
 	}
-	config := &storage.Config{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		Password: os.Getenv("DB_PASS"),
-		User:     os.Getenv("DB_USER"),
-		SSLMode:  os.Getenv("DB_SSLMODE"),
-		DBName:   os.Getenv("DB_NAME"),
+	
+	// Declare db variable here so it is in the scope of the entire main function
+	var db *gorm.DB
+	
+	// Check the environment and set up the database config accordingly
+	if os.Getenv("ENV") == "PROD" {
+		// Parse the production DATABASE_URL
+		config, err := storage.ParseURL(os.Getenv("DATABASE_URL"))
+		if err != nil {
+			log.Fatal("Error parsing DATABASE_URL:", err)
+		}
+	
+		// Perform type assertion to *storage.Config (if it's necessary)
+		if config == nil {
+			log.Fatal("Parsed config is nil")
+		}
+		
+		// Pass the *storage.Config to NewConnection
+		db, err = storage.NewConnection(config)
+		if err != nil {
+			log.Fatal("could not load the database:", err)
+		}
+	
+	} else {
+		// Development or other environment configuration
+		config := &storage.Config{
+			Host:     os.Getenv("DB_HOST"),
+			Port:     os.Getenv("DB_PORT"),
+			Password: os.Getenv("DB_PASS"),
+			User:     os.Getenv("DB_USER"),
+			SSLMode:  os.Getenv("DB_SSLMODE"),
+			DBName:   os.Getenv("DB_NAME"),
+		}
+		
+		// Pass the *storage.Config to NewConnection
+		db, err = storage.NewConnection(config)
+		if err != nil {
+			log.Fatal("could not load the database:", err)
+		}
 	}
-
-	db, err := storage.NewConnection(config)
-	if err != nil {
-		log.Fatal("could not load the database")
-	}
-
+	
+	// Migrate database schema
 	err = models.Migrate(db)
 	if err != nil {
 		log.Fatal("could not migrate db")
 	}
 
+	// Set up the repository
 	r := Repository{
 		DB: db,
 	}
+
+	// Create a new Fiber app and configure routes
 	app := fiber.New()
 	app.Use(cors.New())
 	r.SetupRoutes(app)
-	app.Listen(":8080")
+
+	// Start the server on the dynamically assigned PORT or fallback to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default to 8080 if PORT is not set
+	}
+
+	// Start the server
+	app.Listen(":" + port)
 }
+
