@@ -42,7 +42,6 @@ const Signup: React.FC = () => {
     }
 
     try {
-      console.log(name, email, password);
       const response = await apiRequest("signup", "POST", "", {
         username: name,
         email: email,
