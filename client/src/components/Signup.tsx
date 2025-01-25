@@ -10,9 +10,27 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const isValidEmail = (email: string) => {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const signupUser = async () => {
+    // Input validation
     if (!email || !name || !password || !confirmPassword) {
       setErrorMessage("Please enter all fields.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
       return;
     }
 
@@ -22,8 +40,9 @@ const Signup: React.FC = () => {
       );
       return;
     }
-    console.log(name, email, password);
+
     try {
+      console.log(name, email, password);
       const response = await apiRequest("signup", "POST", "", {
         username: name,
         email: email,
@@ -35,7 +54,7 @@ const Signup: React.FC = () => {
       } else {
         console.error("Signup error:", response.message);
         setErrorMessage(
-          "User existed. Please try again with a different email."
+          "User already exists. Please try again with a different email."
         );
       }
     } catch (error) {
@@ -53,8 +72,6 @@ const Signup: React.FC = () => {
 
       {/* Right Section: Form */}
       <div className="form-container">
-        {" "}
-        {/* New parent class */}
         <div className="tab-buttons">
           <button
             className="button button-tab-login-off"
@@ -90,7 +107,7 @@ const Signup: React.FC = () => {
         <div>
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (min 8 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input-field"
