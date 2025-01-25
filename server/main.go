@@ -651,7 +651,15 @@ func main() {
 	// Check the environment and set up the database config accordingly
 	if os.Getenv("ENV") == "PROD" {
 		// Parse the production DATABASE_URL
-		config, err := storage.ParseURL(os.Getenv("DATABASE_URL"))
+		// config, err := storage.ParseURL(os.Getenv("DATABASE_URL"))
+		config := &storage.Config{
+			Host:     os.Getenv("DB_HOST"),
+			Port:     os.Getenv("DB_PORT"),
+			Password: os.Getenv("DB_PASS"),
+			User:     os.Getenv("DB_USER"),
+			DBName:   os.Getenv("DB_NAME"),
+		}
+		
 		if err != nil {
 			log.Fatal("Error parsing DATABASE_URL:", err)
 		}
