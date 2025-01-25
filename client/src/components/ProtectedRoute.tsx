@@ -4,7 +4,6 @@ import { useAuth } from "../providers/AuthProvider";
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   var { user } = useAuth(); // Get the user from AuthProvider
   if (!user) {
-    console.log("hi");
     // Redirect to login if not authenticated
     return <Navigate to="/" replace />;
   }

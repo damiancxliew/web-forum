@@ -7,17 +7,18 @@ services:
       - "8080:8080"
     environment:
       - ENV=DEV
-      - DB_HOST=localhost
+      - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=damian
       - DB_PASS=damiancxliew
-      - DB_NAME=web-forum
       - DB_SSLMODE=disable
-    volumes:
-      - .:/app
+      - DB_NAME=web-forum
     networks:
       - app_network
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
 
   # Example of a database service if required for local testing
   db:
@@ -32,6 +33,12 @@ services:
       - app_network
     volumes:
       - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U damian -d web-forum"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
 networks:
   app_network:

@@ -1,6 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { createBrowserRouter, NavLink, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  NavLink,
+  RouterProvider,
+} from "react-router-dom";
 import App from "./App";
 import Admin from "./components/Admin";
 import Home from "./components/Home";
@@ -14,7 +19,40 @@ import AdminRequest from "./components/AdminRequest";
 import LandingPage from "./components/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./components/NotFound";
+import { useAuth } from "./providers/AuthProvider";
 
+// Component that checks if user is authenticated
+const AuthRedirect = () => {
+  const { user } = useAuth(); // Get the user from your useAuth hook
+  if (user) {
+    // If user is logged in, redirect to /home
+    return <Navigate to="/home" />;
+  }
+  // If not authenticated, show LandingPage
+  return <LandingPage />;
+};
+
+// Component for Login page redirect if already logged in
+const LoginRedirect = () => {
+  const { user } = useAuth(); // Get the user from your useAuth hook
+  if (user) {
+    // If user is logged in, redirect to /home
+    return <Navigate to="/home" />;
+  }
+  // Otherwise, render the Login page
+  return <Login />;
+};
+
+// Component for Signup page redirect if already logged in
+const SignupRedirect = () => {
+  const { user } = useAuth(); // Get the user from your useAuth hook
+  if (user) {
+    // If user is logged in, redirect to /home
+    return <Navigate to="/home" />;
+  }
+  // Otherwise, render the Signup page
+  return <Signup />;
+};
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +60,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/", // Landing page route
-        element: <LandingPage />,
+        element: <AuthRedirect />,
       },
       {
         path: "/home",
@@ -34,11 +72,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/login", // Login page route
-        element: <Login />,
+        element: <LoginRedirect />,
       },
       {
         path: "/signup", // Signup page route
-        element: <Signup />,
+        element: <SignupRedirect />,
       },
       {
         path: "/profile",
@@ -73,17 +111,6 @@ const router = createBrowserRouter([
     ],
   },
   { path: "*", element: <NotFound />, handle: { isNotFound: true } },
-  //Example on creating new path
-  // {
-  //     path: "/{new_path}",
-  //     element: <App />,
-  //     children: [
-  //         {
-  //             path: "/{new_path}",
-  //             element: {file_name},
-  //         },
-  //     ],
-  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

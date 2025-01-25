@@ -22,17 +22,19 @@ interface ApiResponse<T = any> {
 export const apiRequest = async (
   collection_name: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
-  endpoint: string,
+  endpoint: string = "",
   data: any = null
 ): Promise<ApiResponse> => {
   try {
-    const url = `${process.env.REACT_APP_API_URL}/api/${collection_name}/${endpoint}`;
+    // Construct the URL, ensuring no trailing slash if endpoint is empty
+    const url = `${process.env.REACT_APP_API_URL}/api/${collection_name}${
+      endpoint ? `/${endpoint}` : ""
+    }`;
     let response: AxiosResponse;
 
     // Handle different HTTP methods
     switch (method) {
       case "GET":
-        // console.log(collection_name, endpoint, data);
         response = await axios.get(url, { params: data });
         break;
       case "POST":
@@ -47,7 +49,6 @@ export const apiRequest = async (
       default:
         throw new Error("Invalid HTTP method");
     }
-    // await axios.post(url, data).then(e => console.log(e))
 
     return {
       success: true,

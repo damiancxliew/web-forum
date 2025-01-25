@@ -194,7 +194,7 @@ const Forum: React.FC = () => {
       const response = await apiRequest("get_categories", "GET", "");
       //   console.log(response.data);
       setCategories(response.data);
-      if (response.data.length > 0 && selectedCategory === null) {
+      if (response?.data.length > 0 && selectedCategory === null) {
         setSelectedCategory(response.data[0].id);
       }
     } catch (error) {
@@ -222,7 +222,7 @@ const Forum: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-10 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center">Forum</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">InnerSphere Forum</h1>
 
       {/* Categories as Navigation Bar */}
       <div className="flex items-center justify-between border-b pb-4 mb-6">
@@ -263,7 +263,7 @@ const Forum: React.FC = () => {
             </div>
             <button
               onClick={() => setThreadModalOpen(true)}
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600"
             >
               Add Thread
             </button>

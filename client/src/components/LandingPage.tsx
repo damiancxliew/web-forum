@@ -11,7 +11,7 @@ const Landing = () => {
       <nav className="navbar">
         {/* Logo on the left */}
         <div className="navbar-logo" onClick={() => navigate("/")}>
-          Technical Web Forum
+          Innersphere Forum
         </div>
         {/* Login and Signup buttons on the right */}
         <div className="navbar-buttons">

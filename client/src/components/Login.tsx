@@ -33,7 +33,7 @@ const Login: React.FC = () => {
         console.log(user);
         dispatch({ type: "LOGIN", payload: user.data });
 
-        console.log("Login successful:", response.data);
+        console.log("Login successful");
         navigate("/home");
       } else {
         setErrorMessage("Incorrect Email or Password");
