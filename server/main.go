@@ -663,11 +663,6 @@ func main() {
 		if err != nil {
 			log.Fatal("Error parsing DATABASE_URL:", err)
 		}
-	
-		// Perform type assertion to *storage.Config (if it's necessary)
-		if config == nil {
-			log.Fatal("Parsed config is nil")
-		}
 		
 		// Pass the *storage.Config to NewConnection
 		db, err = storage.NewConnection(config)
