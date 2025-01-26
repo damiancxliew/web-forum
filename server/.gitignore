@@ -1,1 +1,11 @@
-/.env
+# Binaries and compiled files
+*.exe
+*.out
+*.o
+
+# Environment files
+.env
+
+# Logs
+logs/
+*.log
