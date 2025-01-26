@@ -268,7 +268,7 @@ const Forum: React.FC = () => {
               Add Thread
             </button>
           </div>
-          {threads.filter((thread) => thread.category_id === selectedCategory)
+          {threads?.filter((thread) => thread.category_id === selectedCategory)
             .length === 0 ? (
             <div className="text-center text-gray-500 py-8">
               Add a thread for this topic!
@@ -335,7 +335,7 @@ const Forum: React.FC = () => {
                             Add Comment
                           </button>
                         </div>
-                        {comments.filter(
+                        {comments?.filter(
                           (comment) => comment.thread_id === thread.id
                         ).length === 0 ? (
                           <p className="text-sm text-gray-500">
