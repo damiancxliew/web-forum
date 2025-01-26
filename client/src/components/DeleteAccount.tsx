@@ -163,7 +163,10 @@ function DeleteAccount() {
               Account Deleted
             </AlertDialogHeader>
             <AlertDialogBody>
-              <Text>Your account has been successfully deleted.</Text>
+              <Text>
+                Your account has been successfully deleted. Redirecting to login
+                page...
+              </Text>
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button onClick={() => setIsSuccessDialogOpen(false)}>

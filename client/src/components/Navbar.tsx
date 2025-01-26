@@ -3,10 +3,13 @@ import { CircleUserRound, LogOut } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import logo from "../assets/logo.png";
+import { useToast } from "@chakra-ui/react";
 
 export default function Navbar() {
   const { user, dispatch } = useAuth();
   const navigate = useNavigate();
+
+  const toast = useToast();
   const [open, setOpen] = useState(false);
   const profilePicture = user?.profilePicture;
 
@@ -16,8 +19,16 @@ export default function Navbar() {
         type: "LOGOUT",
         payload: null,
       });
+      toast({
+        title: "Logging out",
+        description: "Redirecting to login page...",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
       navigate("/");
-    }, 1000); // REDIRECT after logout
+    }, 1000);
   };
 
   return (

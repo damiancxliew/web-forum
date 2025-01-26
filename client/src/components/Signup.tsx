@@ -2,9 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { apiRequest } from "../api/apiRequest";
+import { useToast } from "@chakra-ui/react";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -49,12 +51,18 @@ const Signup: React.FC = () => {
       });
       if (response.success) {
         console.log("User registered successfully:", response.data);
+        toast({
+          title: "Signup Successful",
+          description: "Redirecting to login page. Please log in.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
         navigate("/login");
       } else {
         console.error("Signup error:", response.message);
-        setErrorMessage(
-          "User already exists. Please try again with a different email."
-        );
+        setErrorMessage(`${response.message}`);
       }
     } catch (error) {
       console.error("Signup error:", error);
