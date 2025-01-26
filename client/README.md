@@ -1,6 +1,6 @@
-# Golang Server and React Client Setup to run the Application Locally
+# Golang Server and React Client Setup for Innersphere Forum
 
-This project is a full-stack web forum application, consisting of a Golang backend server and a React frontend client. The application provides users with a seamless platform to interact and share ideas through threads and comments.
+Innersphere Forum is a full-stack web-forum application, consisting of a Golang backend server and a React frontend client. The application provides users with a seamless platform to interact and share ideas through threads and comments.
 
 ## Features
 
