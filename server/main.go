@@ -597,11 +597,13 @@ func (r *Repository) SetupRoutes(router *gin.Engine) {
 // CORS middleware function definition
 func corsMiddleware() gin.HandlerFunc {
 	// Define allowed origins as a comma-separated string
-	originsString := "http://localhost:3000, https://innersphereforum.netlify.app"
+	originsString := "http://localhost:3000,https://innersphereforum.netlify.app"
 	var allowedOrigins []string
 	if originsString != "" {
 	 // Split the originsString into individual origins and store them in allowedOrigins slice
-	 allowedOrigins = strings.Split(originsString, ",")
+		for _, origin := range strings.Split(originsString, ",") {
+			allowedOrigins = append(allowedOrigins, strings.TrimSpace(origin))
+		}
 	}
    
 	// Return the actual middleware handler function
